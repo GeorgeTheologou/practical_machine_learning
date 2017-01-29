@@ -50,8 +50,8 @@ testing <- testing %>% select(-one_of(names))
 # We will fit a classification tree using the Recursive Partitioning and Regression Trees model 
 
 model <- train(classe ~., method="rpart", data = training)
-pred1 <- predict(modFit1,newdata = testing)
-pred1
+prediction <- predict(model,newdata = testing)
+prediction
 
 #Submitted the results listed above and earned 9/20 points (45%)
 
@@ -62,7 +62,7 @@ library(randomForest)
 training <- training %>% select(-one_of(c('skewness_roll_arm','skewness_yaw_arm')))
 testing <- testing %>% select(-one_of(c('skewness_roll_arm','skewness_yaw_arm','problem_id')))
 
-model <- randomForest(as.factor(classe) ~.,data = training,importance=TRUE,ntree=2000)
+rf_model <- randomForest(as.factor(classe) ~.,data = training,importance=TRUE,ntree=2000)
 
 # I tried to predic classification but I was receiving an error that the type of predictors in new data do not match that of the training data.
 # This is because some of the variables had different types and because we have different levels of factors for the categorical variables.
@@ -74,7 +74,7 @@ levels(testing$cvtd_timestamp) <- levels(training$cvtd_timestamp)
 levels(testing$new_window) <- levels(training$new_window)
 
 # Predict on training data
-pred1 <- predict(model,newdata = testing)
-pred1
+rf_prediction <- predict(rf_model,newdata = testing)
+rf_prediction
 
 #Submitted the results listed above and earned 20/20 points!
