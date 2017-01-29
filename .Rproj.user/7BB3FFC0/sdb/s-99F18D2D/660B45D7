@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "library(caret)\nlibrary(AppliedPredictiveModeling)\nlibrary(dplyr)\nlibrary(pls)\nlibrary(rpart)\nlibrary(\"VIM\")\nlibrary(plyr)\n\n# Data Capture\ntraining <- read.csv(url(\"https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv\"))\ntesting <- read.csv(url(\"https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv\"))\n\n# Data Cleaning\n# Let's have a look at the data by creating a plot of missing data\naggr(training)\n\n# We see that many of the variables are empty or NA. Let's identify these variables and remove them from the training set.\nna_count <-sapply(training, function(y) sum(length(which(is.na(y)))))\nna_count <- data.frame(na_count)\nna_count\nnames = c('avg_yaw_belt',\n         'max_roll_belt',\n         'max_picth_belt',\n         'min_roll_belt',\n         'min_pitch_belt',\n         'amplitude_roll_belt',\n         'amplitude_pitch_belt',\n         'var_total_accel_belt',\n         'avg_roll_belt',\n         'stddev_roll_belt',\n         'var_roll_belt',\n         'avg_pitch_belt',\n         'stddev_pitch_belt',\n         'var_pitch_belt',\n         'vavg_yaw_belt',\n         'stddev_yaw_belt',\n         'var_yaw_belt',\n         'var_accel_arm',\n         'avg_roll_arm',\n         'stddev_roll_arm',\n         'var_roll_arm',\n         'avg_pitch_arm',\n         'stddev_pitch_arm',\n         'var_pitch_arm',\n         'avg_yaw_arm',\n         'stddev_yaw_arm',\n         'var_yaw_arm',\n         'max_roll_arm',\n         'max_picth_arm',\n         'max_yaw_arm',\n         'min_roll_arm',\n         'min_pitch_arm',\n         'min_yaw_arm',\n         'amplitude_roll_arm',\n         'amplitude_pitch_arm',\n         'amplitude_yaw_arm',\n         'max_roll_dumbbell',\n         'max_picth_dumbbell',\n         'min_roll_dumbbell',\n         'min_pitch_dumbbell',\n         'amplitude_roll_dumbbell',\n         'amplitude_pitch_dumbbell',\n         'var_accel_dumbbell',\n         'avg_roll_dumbbell',\n         'stddev_roll_dumbbell',\n         'var_roll_dumbbell',\n         'avg_pitch_dumbbell',\n         'stddev_pitch_dumbbell',\n         'var_pitch_dumbbell',\n         'avg_yaw_dumbbell',\n         'stddev_yaw_dumbbell',\n         'var_yaw_dumbbell',\n         'max_roll_forearm',\n         'max_picth_forearm',\n         'min_roll_forearm',\n         'min_pitch_forearm',\n         'amplitude_roll_forearm',\n         'amplitude_pitch_forearm',\n         'var_accel_forearm',\n         'avg_roll_forearm',\n         'stddev_roll_forearm',\n         'var_roll_forearm',\n         'avg_pitch_forearm',\n         'stddev_pitch_forearm',\n         'var_pitch_forearm',\n         'avg_yaw_forearm',\n         'stddev_yaw_forearm',\n         'var_yaw_forearm')\n\n# \ntraining <- training %>% select(-one_of(names))\naggr(training)\n\ntesting <- testing %>% select(-one_of(names))\ncount(training, 'classe')\n\n# Apply Model\n# Perform a regression model\nmodFit1 <- train(classe ~., method=\"rpart\", data = training)\npred1 <- predict(modFit1,newdata = testing)\nfancyRpartPlot(pred1)\n\nctrl <- trainControl(method= \"repeatedcv\", repeats = 3, classProbs = TRUE)\n\nmodFit2 <- train(classe ~ ., data = training, method = \"pls\",  tuneLength = 15, trControl = ctrl,  \n                 preProc = c(\"center\", \"scale\"))\n\npred2 <- predict(modFit2,newdata = testing)\npred2\n\n# Interpret Model \nconfusionMatrix(pred2,testing$classe)\nconfusionMatrix(pred2,training$classe)\nconfusionMatrix(pred2,testing$classe)\n\nsummary(testing)",
+    "created" : 1485602719202.000,
+    "dirty" : true,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3927968406",
+    "id" : "660B45D7",
+    "lastKnownWriteTime" : 1485611584,
+    "last_content_update" : 1485611786796,
+    "path" : "~/Desktop/Skyscanner/draft/practical_machine_learning/practical_machine_learning/prediction_assignment.R",
+    "project_path" : "prediction_assignment.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
